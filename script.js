@@ -112,11 +112,14 @@ async function shareAnswer() {
   const questionText = document.getElementById("question-text").textContent;
   const answerText = document.getElementById("answer-text").textContent;
   const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- လက်ထောက်ဗေဒင်`;
+  const encodedText = encodeURIComponent(shareText);
 
   try {
     if (window.Telegram.WebApp) {
-      window.Telegram.WebApp.sendData(shareText);
+      // Use Telegram's openLink to share text via Telegram
+      window.Telegram.WebApp.openLink(`tg://msg?text=${encodedText}`);
     } else if (navigator.share) {
+      // Fallback to Web Share API
       await navigator.share({
         text: shareText,
       });
@@ -124,15 +127,25 @@ async function shareAnswer() {
       throw new Error("Sharing not supported");
     }
   } catch (error) {
-    console.error("Error sharing:", error);
-    alert("မျှဝေရန် မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။");
+    console.error("Share error:", error);
+    alert("မျှဝေရန် မအောင်မြင်ပါ။ Telegram သို့မဟုတ် သင့်စက်ရဲ့ Share လုပ်ဆောင်ချက်ကို စစ်ဆေးပါ။");
   }
 }
 
 // Falling stars animation
 function initStarsAnimation() {
   const canvas = document.getElementById("stars-canvas");
+  if (!canvas) {
+    console.error("Canvas not found!");
+    return;
+  }
   const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    console.error("Canvas context not available!");
+    return;
+  }
+
+  console.log("Initializing stars animation...");
 
   // Set canvas size
   canvas.width = window.innerWidth;
@@ -150,22 +163,24 @@ function initStarsAnimation() {
 
   function Star() {
     this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 2 + 1;
-    this.speed = Math.random() * 2 + 1;
+    this.y = Math.random() * canvas.height * -1; // Start above screen
+    this.size = Math.random() * 2 + 2; // Larger stars
+    this.speed = Math.random() * 3 + 2; // Faster fall
+    this.opacity = Math.random() * 0.5 + 0.5; // Varying opacity
 
     this.draw = function () {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
       ctx.fill();
     };
 
     this.update = function () {
       this.y += this.speed;
-      if (this.y > canvas.height) {
-        this.y = 0;
+      if (this.y > canvas.height + this.size) {
+        this.y = -this.size;
         this.x = Math.random() * canvas.width;
+        this.opacity = Math.random() * 0.5 + 0.5;
       }
       this.draw();
     };
