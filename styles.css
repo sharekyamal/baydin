@@ -353,17 +353,5 @@ body {
     margin-bottom: 5px;
   }
 
-  .footer {
-    padding: 6px 10px;
-  }
-
-  .footer-button {
-    padding: 6px 15px;
-    font-size: 0.8rem;
-    gap: 3px;
-  }
-
-  .footer-button .icon {
-    font-size: 1rem;
-  }
+  
 }
