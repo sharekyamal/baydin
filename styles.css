@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: 'Pyidaungsu', Arial, sans-serif;
 }
 
 body {
@@ -12,24 +12,18 @@ body {
   overflow-x: hidden;
 }
 
-#particles-js {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
 .container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 15px;
   position: relative;
   z-index: 1;
+  width: 100%;
 }
 
 .screen {
   text-align: center;
-  padding-bottom: 60px;
+  padding-bottom: 50px;
   animation: slideIn 0.5s ease-in;
 }
 
@@ -49,21 +43,21 @@ body {
 }
 
 .glow-text {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .magic-button {
   background: linear-gradient(45deg, #ff00ff, #00ffff);
   border: none;
-  padding: 15px 30px;
+  padding: 12px 25px;
   border-radius: 25px;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-  margin: 10px;
+  margin: 8px;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -74,17 +68,19 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
 }
 
 .grid-item {
   background: rgba(255, 255, 255, 0.2);
-  padding: 20px;
+  padding: 12px;
   border-radius: 10px;
   cursor: pointer;
   text-align: center;
   transition: transform 0.3s, background 0.3s;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .grid-item:hover {
@@ -93,22 +89,52 @@ body {
 }
 
 .grid-item .icon {
-  font-size: 2rem;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  position: relative;
+  animation: sparkle 1.5s infinite;
+}
+
+@keyframes sparkle {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.grid-item .icon::after {
+  content: '✨';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 0.6rem;
+  opacity: 0;
+  animation: sparkle-after 1.5s infinite;
+}
+
+@keyframes sparkle-after {
+  0% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-10px); }
+  100% { opacity: 0; transform: translateY(0); }
 }
 
 .question-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  align-items: center;
 }
 
 .question-item {
   background: rgba(255, 255, 255, 0.2);
-  padding: 15px;
+  padding: 10px;
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.3s, background 0.3s;
+  width: 100%;
+  max-width: 280px;
+  text-align: center;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .question-item:hover {
@@ -118,11 +144,22 @@ body {
 
 .answer-box {
   background: rgba(255, 255, 255, 0.2);
-  padding: 20px;
+  padding: 12px;
   border-radius: 10px;
-  margin: 20px 0;
-  font-size: 1.1rem;
+  margin: 15px auto;
+  font-size: 0.9rem;
   animation: fadeIn 1s ease-in;
+  width: 100%;
+  max-width: 280px;
+  text-align: center;
+}
+
+.question-text {
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 @keyframes fadeIn {
@@ -136,23 +173,26 @@ body {
   }
 }
 
-.daily-prediction {
-  margin-top: 20px;
-  padding: 15px;
+.adsonar-banner {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  padding-top: 83.33%;
+  margin: 15px auto;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.daily-prediction.highlight {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+.adsonar-banner > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .footer {
@@ -160,28 +200,35 @@ body {
   bottom: 0;
   width: 100%;
   max-width: 600px;
-  background: #fff;
   display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  justify-content: space-around; /* Changed to space-around for centered buttons */
+  padding: 10px 20px; /* Adjusted padding for balanced spacing */
+  background: transparent;
   z-index: 2;
 }
 
 .footer-button {
-  background: none;
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
   border: none;
-  color: #4b0082;
+  border-radius: 50px;
+  padding: 12px 25px; /* Increased padding for larger buttons */
+  color: #fff;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 5px; /* Reduced gap for closer icon and text */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.footer-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
 }
 
 .footer-button .icon {
-  font-size: 1.5rem;
-  margin-bottom: 5px;
+  font-size: 1.5rem; /* Increased icon size */
 }
 
 #history-list {
@@ -190,26 +237,90 @@ body {
 
 #history-list li {
   background: rgba(255, 255, 255, 0.2);
-  padding: 15px;
+  padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
+/* Responsive adjustments for mobile */
 @media (max-width: 400px) {
-  .grid {
-    grid-template-columns: 1fr;
+  .container {
+    padding: 10px;
+  }
+
+  .screen {
+    padding-bottom: 40px;
   }
 
   .glow-text {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .magic-button {
-    padding: 12px 20px;
-    font-size: 1rem;
+    padding: 8px 15px;
+    font-size: 0.8rem;
+    margin: 5px;
   }
 
-  .daily-prediction.highlight {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .grid-item {
     padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  .grid-item .icon {
+    font-size: 1.2rem;
+  }
+
+  .question-list {
+    gap: 6px;
+  }
+
+  .question-item {
+    padding: 8px;
+    font-size: 0.8rem;
+    max-width: 260px;
+  }
+
+  .answer-box {
+    padding: 10px;
+    font-size: 0.8rem;
+    max-width: 260px;
+    margin: 10px auto;
+  }
+
+  .question-text {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .footer {
+    padding: 8px 15px; /* Adjusted padding for mobile */
+  }
+
+  .footer-button {
+    padding: 8px 20px; /* Adjusted padding for mobile */
+    font-size: 0.9rem;
+    gap: 4px; /* Further reduced gap for mobile */
+  }
+
+  .footer-button .icon {
+    font-size: 1.2rem; /* Adjusted icon size for mobile */
+  }
+
+  #history-list li {
+    padding: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
   }
 }
+
+/* Extra small screens (Telegram Mini App on very small devices) */
+@media (max-width: 320px) {
+  .container {
+    padding: 8p
