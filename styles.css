@@ -8,7 +8,7 @@
 body {
   background: url('https://media1.giphy.com/media/g0NZo5jXrlTsRKD5B8/200w.gif') repeat;
   background-size: 200px; /* Matches GIF width for seamless tiling */
-  color: #fff;
+  color: ;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
