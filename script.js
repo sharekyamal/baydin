@@ -16,21 +16,50 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Sample AdSonar initialization (replace with actual credentials)
+// AdSonar configuration
+const adSonarConfig = {
+  appId: "YOUR_APP_ID", // Replace with your actual App ID
+  apiKey: "YOUR_API_KEY", // Replace with your actual API Key
+  bannerAdUnitId: "YOUR_BANNER_AD_UNIT_ID", // Replace with your actual Banner Ad Unit ID
+  interstitialAdUnitId: "YOUR_INTERSTITIAL_AD_UNIT_ID", // Replace with your actual Interstitial Ad Unit ID
+};
+
+// Initialize AdSonar and load Banner Ad
 function initAdSonar() {
   console.log("Initializing AdSonar...");
-  // AdSonar.init({
-  //   appId: "YOUR_APP_ID",
-  //   apiKey: "YOUR_API_KEY",
-  // });
+  // Uncomment and replace with actual AdSonar initialization
+  /*
+  AdSonar.init({
+    appId: adSonarConfig.appId,
+    apiKey: adSonarConfig.apiKey,
+  });
+  */
+  
+  // Load Banner Ad
+  const bannerDiv = document.getElementById("adsonar-banner");
+  if (bannerDiv) {
+    bannerDiv.innerHTML = '<div>AdSonar Banner Ad (300x250)</div>'; // Placeholder
+    // Uncomment to enable actual Banner Ad
+    /*
+    AdSonar.showBanner({
+      adUnitId: adSonarConfig.bannerAdUnitId,
+      size: "300x250",
+      container: bannerDiv,
+    });
+    */
+  }
 }
 
-// Show AdSonar ad (placeholder)
-function showAd() {
+// Show AdSonar Interstitial Ad
+function showInterstitialAd() {
   console.log("Showing AdSonar interstitial ad...");
-  // AdSonar.showInterstitial({
-  //   onClose: () => console.log("Ad closed"),
-  // });
+  // Uncomment to enable actual Interstitial Ad
+  /*
+  AdSonar.showInterstitial({
+    adUnitId: adSonarConfig.interstitialAdUnitId,
+    onClose: () => console.log("Interstitial Ad closed"),
+  });
+  */
 }
 
 // Load JSON data
@@ -103,6 +132,7 @@ async function showAnswer(questionId) {
   });
 
   const answer = answers[Math.floor(Math.random() * answers.length)];
+  document.getElementById("question-text").textContent = questionText;
   document.getElementById("answer-text").textContent = answer;
 
   // Save to Firebase
@@ -117,24 +147,40 @@ async function showAnswer(questionId) {
     console.error("Error saving to Firebase:", error);
   }
 
-  // Show ad
-  showAd();
+  // Show Interstitial Ad
+  showInterstitialAd();
 
   showScreen("answer-screen");
 }
 
 // Share answer
 function shareAnswer() {
+  const question = document.getElementById("question-text").textContent;
   const answer = document.getElementById("answer-text").textContent;
-  const shareText = `ဗေဦဦဒင်အဖြေ: ${answer} \nသင်လည်း ဗေဦဦဦဦဒင်မေးကြည့်ပါ: [Your Bot Link]`;
-  if (window.Telegram.WebApp.shareTo) {
-    window.Telegram.WebApp.shareTo(shareText);
-  } else {
-    navigator.share({
-      text: shareText,
-    }).catch((error) => console.error("Error sharing:", error));
+  const shareText = `ဗေဦဦဒင်\nမေးခွန်း: ${question}\nအဖြေ: ${answer}\nသင်လည်း ဗေဦဦဒင်မေးကြည့်ပါ: [Your Bot Link]`;
+  
+  try {
+    // For Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+      const encodedText = encodeURIComponent(shareText);
+      const shareUrl = `https://t.me/share/url?text=${encodedText}`;
+      window.Telegram.WebApp.openLink(shareUrl);
+    } 
+    // For other platforms
+    else if (navigator.share) {
+      navigator.share({
+        text: shareText,
+      });
+    } else {
+      // Fallback: Copy to clipboard
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert("မျှဝေရန်အတွက် စာသားကို ကူးယူလိုက်ပါပြီ။");
+      });
+    }
+  } catch (error) {
+    console.error("Error sharing:", error);
+    alert("မျှဝေရန် မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်ကြိုးစားပါ။");
   }
-  console.log("Sharing:", shareText);
 }
 
 // Show history screen
@@ -170,45 +216,8 @@ async function showHistory() {
   showScreen("history-screen");
 }
 
-// Load daily prediction
-async function loadDailyPrediction() {
-  const data = await loadData();
-  const allAnswers = [];
-  data.categories.forEach((category) => {
-    category.questions.forEach((q) => {
-      allAnswers.push(...q.answers);
-    });
-  });
-  const today = new Date().toDateString();
-  const seed = today.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  const index = seed % allAnswers.length;
-  document.getElementById("daily-text").textContent = allAnswers[index] || "ယနေ့ အခွင့်အလမ်းသစ်တွေ စောင့်ကြိုနေပါတယ်။";
-}
-
-// Initialize particles
-function initParticles() {
-  particlesJS("particles-js", {
-    particles: {
-      number: { value: 100, density: { enable: true, value_area: 800 } },
-      color: { value: "#ffffff" },
-      shape: { type: "circle" },
-      opacity: { value: 0.5, random: true },
-      size: { value: 3, random: true },
-      move: { enable: true, speed: 1, direction: "none", random: true },
-    },
-    interactivity: {
-      detect_on: "canvas",
-      events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
-      modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } },
-    },
-    retina_detect: true,
-  });
-}
-
 // Initialize app
 document.addEventListener("DOMContentLoaded", () => {
   initAdSonar();
-  initParticles();
-  loadDailyPrediction();
   showScreen("home-screen");
 });
