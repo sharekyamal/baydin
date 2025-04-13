@@ -1,79 +1,54 @@
-// Initialize Telegram WebApp
-window.Telegram.WebApp.ready();
-const telegramUser = window.Telegram.WebApp.initDataUnsafe.user || { id: "test_user" };
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBS0gyUpvvvp8EoEQpsbNNZ4HOHeJcMzFI",
+  authDomain: "natymetsi.firebaseapp.com",
+  projectId: "natymetsi",
+  storageBucket: "natymetsi.firebasestorage.app",
+  messagingSenderId: "1026866134400",
+  appId: "1:1026866134400:web:2f577f051b2d564a84d565",
+  measurementId: "G-H1K543SS8T"
+};
 
 // Initialize Firebase
-const firebaseConfig = {
-  // Replace with your Firebase config
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const analytics = firebase.analytics();
 
-// AdSonar configuration
-const adSonarConfig = {
-  appId: "YOUR_APP_ID", // Replace with your actual App ID
-  apiKey: "YOUR_API_KEY", // Replace with your actual API Key
-  bannerAdUnitId: "YOUR_BANNER_AD_UNIT_ID", // Replace with your actual Banner Ad Unit ID
-  interstitialAdUnitId: "YOUR_INTERSTITIAL_AD_UNIT_ID", // Replace with your actual Interstitial Ad Unit ID
+// AdSonar Banner Ad (300x250)
+window.AdSonar = window.AdSonar || {};
+window.AdSonar.loadAd = function () {
+  const adBanner = document.getElementById("adsonar-banner");
+  if (adBanner) {
+    adBanner.innerHTML = "<div>AdSonar Banner Ad (300x250)</div>";
+  }
 };
 
-// Initialize AdSonar and load Banner Ad
-function initAdSonar() {
-  console.log("Initializing AdSonar...");
-  // Uncomment and replace with actual AdSonar initialization
-  /*
-  AdSonar.init({
-    appId: adSonarConfig.appId,
-    apiKey: adSonarConfig.apiKey,
-  });
-  */
-  
-  // Load Banner Ad
-  const bannerDiv = document.getElementById("adsonar-banner");
-  if (bannerDiv) {
-    bannerDiv.innerHTML = '<div>AdSonar Banner Ad (300x250)</div>'; // Placeholder
-    // Uncomment to enable actual Banner Ad
-    /*
-    AdSonar.showBanner({
-      adUnitId: adSonarConfig.bannerAdUnitId,
-      size: "300x250",
-      container: bannerDiv,
-    });
-    */
-  }
-}
+// Telegram WebApp Initialization
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
 
-// Show AdSonar Interstitial Ad
-function showInterstitialAd() {
-  console.log("Showing AdSonar interstitial ad...");
-  // Uncomment to enable actual Interstitial Ad
-  /*
-  AdSonar.showInterstitial({
-    adUnitId: adSonarConfig.interstitialAdUnitId,
-    onClose: () => console.log("Interstitial Ad closed"),
-  });
-  */
-}
+// Sample Data
+const categories = [
+  {
+    name: "အချစ်ရေး",
+    icon: "💕",
+    questions: [
+      { text: "သူငါ့ကိုချစ်ရဲ့လား", answers: ["ချစ်တယ်", "မချစ်ဘူး", "နည်းနည်းချစ်တယ်"] },
+      { text: "ငါတို့လက်ထပ်နိုင်မလား", answers: ["နိုင်တယ်", "မနိုင်ဘူး", "နောက်မှပေါ့"] },
+    ],
+  },
+  {
+    name: "အလုပ်အကိုင်",
+    icon: "💼",
+    questions: [
+      { text: "ငါ့အလုပ်သစ်အဆင်ပြေမလား", answers: ["ပြေတယ်", "မပြေဘူး", "နည်းနည်းခက်မယ်"] },
+      { text: "ငါရာထူးတိုးမလား", answers: ["တိုးမယ်", "မတိုးဘူး", "နောက်မှတိုးမယ်"] },
+    ],
+  },
+];
 
-// Load JSON data
-async function loadData() {
-  try {
-    const response = await fetch("data.json");
-    return await response.json();
-  } catch (error) {
-    console.error("Error loading data:", error);
-    return { categories: [] };
-  }
-}
-
-// Show specific screen
+// Show Screen Function
 function showScreen(screenId) {
   document.querySelectorAll(".screen").forEach((screen) => {
     screen.classList.add("hidden");
@@ -81,143 +56,97 @@ function showScreen(screenId) {
   document.getElementById(screenId).classList.remove("hidden");
 }
 
-// Show categories screen
-async function showCategories() {
-  const data = await loadData();
+// Show Categories
+function showCategories() {
   const grid = document.getElementById("categories-grid");
   grid.innerHTML = "";
-  data.categories.forEach((category) => {
+  categories.forEach((category, index) => {
     const item = document.createElement("div");
     item.className = "grid-item";
-    item.innerHTML = `
-      <div class="icon">${category.icon}</div>
-      <div>${category.name}</div>
-    `;
-    item.onclick = () => showQuestions(category.id);
+    item.innerHTML = `<span class="icon">${category.icon}</span><br>${category.name}`;
+    item.onclick = () => showQuestions(index);
     grid.appendChild(item);
   });
   showScreen("categories-screen");
 }
 
-// Show questions screen
-async function showQuestions(categoryId) {
-  const data = await loadData();
-  const category = data.categories.find((c) => c.id === categoryId);
-  if (!category) return;
-
+// Show Questions
+function showQuestions(categoryIndex) {
+  const category = categories[categoryIndex];
   document.getElementById("category-title").textContent = category.name;
   const list = document.getElementById("question-list");
   list.innerHTML = "";
-  category.questions.forEach((q) => {
+  category.questions.forEach((question, questionIndex) => {
     const item = document.createElement("div");
     item.className = "question-item";
-    item.textContent = q.text;
-    item.onclick = () => showAnswer(q.id);
+    item.textContent = question.text;
+    item.onclick = () => showAnswer(categoryIndex, questionIndex);
     list.appendChild(item);
   });
   showScreen("questions-screen");
 }
 
-// Show answer screen
-async function showAnswer(questionId) {
-  const data = await loadData();
-  let questionText = "";
-  let answers = [];
-  data.categories.forEach((category) => {
-    const question = category.questions.find((q) => q.id === questionId);
-    if (question) {
-      questionText = question.text;
-      answers = question.answers;
-    }
-  });
-
-  const answer = answers[Math.floor(Math.random() * answers.length)];
-  document.getElementById("question-text").textContent = questionText;
-  document.getElementById("answer-text").textContent = answer;
-
-  // Save to Firebase
-  try {
-    await db.collection("history").add({
-      userId: telegramUser.id,
-      question: questionText,
-      answer,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-  } catch (error) {
-    console.error("Error saving to Firebase:", error);
-  }
-
-  // Show Interstitial Ad
-  showInterstitialAd();
-
+// Show Answer
+async function showAnswer(categoryIndex, questionIndex) {
+  const category = categories[categoryIndex];
+  const question = category.questions[questionIndex];
+  const randomAnswer =
+    question.answers[Math.floor(Math.random() * question.answers.length)];
+  document.getElementById("question-text").textContent = question.text;
+  document.getElementById("answer-text").textContent = randomAnswer;
   showScreen("answer-screen");
+
+  // Save to Firestore
+  const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "anonymous";
+  await db.collection("history").add({
+    userId: userId,
+    category: category.name,
+    question: question.text,
+    answer: randomAnswer,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  });
 }
 
-// Share answer
+// Share Answer
 function shareAnswer() {
   const question = document.getElementById("question-text").textContent;
   const answer = document.getElementById("answer-text").textContent;
-  const shareText = `ဗေဦဦဒင်\nမေးခွန်း: ${question}\nအဖြေ: ${answer}\nသင်လည်း ဗေဦဦဒင်မေးကြည့်ပါ: [@BayDinForU_bot]`;
+  const shareText = `မေးခွန်း: ${question}\nအဖြေ: ${answer}\n- နတ်မျက်စိ`;
+  const encodedText = encodeURIComponent(shareText);
   
-  try {
-    // For Telegram WebApp
-    if (window.Telegram && window.Telegram.WebApp) {
-      const encodedText = encodeURIComponent(shareText);
-      const shareUrl = `https://t.me/share/url?text=${encodedText}`;
-      window.Telegram.WebApp.openLink(shareUrl);
-    } 
-    // For other platforms
-    else if (navigator.share) {
-      navigator.share({
-        text: shareText,
-      });
-    } else {
-      // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(shareText).then(() => {
-        alert("မျှဝေရန်အတွက် စာသားကို ကူးယူလိုက်ပါပြီ။");
-      });
-    }
-  } catch (error) {
-    console.error("Error sharing:", error);
-    alert("မျှဝေရန် မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်ကြိုးစားပါ။");
+  // Use Telegram's Share URL Scheme
+  const shareUrl = `https://t.me/share/url?url=${encodedText}&text=${encodedText}`;
+  
+  // Open the Share URL using Telegram WebApp
+  if (window.Telegram.WebApp) {
+    window.Telegram.WebApp.openTelegramLink(shareUrl);
+  } else {
+    // Fallback for non-Telegram environments
+    window.open(shareUrl, "_blank");
   }
 }
 
-// Show history screen
+// Show History
 async function showHistory() {
-  const list = document.getElementById("history-list");
-  list.innerHTML = "";
-  try {
-    const snapshot = await db
-      .collection("history")
-      .where("userId", "==", telegramUser.id)
-      .orderBy("timestamp", "desc")
-      .get();
-    if (snapshot.empty) {
-      list.innerHTML = "<li>မှတ်တမ်းမရှိသေးပါ</li>";
-    } else {
-      snapshot.forEach((doc) => {
-        const item = doc.data();
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <p><strong>မေးခွန်း:</strong> ${item.question}</p>
-          <p><strong>အဖြေ:</strong> ${item.answer}</p>
-          <p><strong>အချိန်:</strong> ${
-            item.timestamp ? new Date(item.timestamp.toDate()).toLocaleString() : "N/A"
-          }</p>
-        `;
-        list.appendChild(li);
-      });
-    }
-  } catch (error) {
-    console.error("Error loading history:", error);
-    list.innerHTML = "<li>မှတ်တမ်းများကို မဖတ်နိုင်ပါ</li>";
-  }
+  const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "anonymous";
+  const historyList = document.getElementById("history-list");
+  historyList.innerHTML = "";
+  const querySnapshot = await db
+    .collection("history")
+    .where("userId", "==", userId)
+    .orderBy("timestamp", "desc")
+    .get();
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    const li = document.createElement("li");
+    li.textContent = `${data.category}: ${data.question} - ${data.answer}`;
+    historyList.appendChild(li);
+  });
   showScreen("history-screen");
 }
 
-// Initialize app
+// Initialize
 document.addEventListener("DOMContentLoaded", () => {
-  initAdSonar();
   showScreen("home-screen");
+  window.AdSonar.loadAd();
 });
