@@ -19,26 +19,26 @@ const db = firebase.firestore();
 // Sample AdSonar initialization (replace with actual credentials)
 function initAdSonar() {
   console.log("Initializing AdSonar...");
-  AdSonar.init({
-    appId: "YOUR_APP_ID",
-    apiKey: "YOUR_API_KEY",
-  });
+  // AdSonar.init({
+  //   appId: "YOUR_APP_ID",
+  //   apiKey: "YOUR_API_KEY",
+  // });
   // Banner ad
   console.log("Loading AdSonar banner...");
-  AdSonar.loadBanner({
-    adUnitId: "YOUR_BANNER_AD_UNIT_ID",
-    containerId: "adsonar-banner",
-    width: 300,
-    height: 250,
-  });
+  // AdSonar.loadBanner({
+  //   adUnitId: "YOUR_BANNER_AD_UNIT_ID",
+  //   containerId: "adsonar-banner",
+  //   width: 300,
+  //   height: 250,
+  // });
 }
 
 // Show AdSonar interstitial ad (placeholder)
 function showAd() {
   console.log("Showing AdSonar interstitial ad...");
-  AdSonar.showInterstitial({
-    onClose: () => console.log("Ad closed"),
-  });
+  // AdSonar.showInterstitial({
+  //   onClose: () => console.log("Ad closed"),
+  // });
 }
 
 // Load JSON data
@@ -79,7 +79,6 @@ async function showCategories() {
 }
 
 let selectedQuestionId = null;
-let selectedQuestionText = "";
 
 // Show questions screen
 async function showQuestions(categoryId) {
@@ -94,18 +93,22 @@ async function showQuestions(categoryId) {
     const item = document.createElement("div");
     item.className = "question-item";
     item.textContent = q.text;
-    item.onclick = () => showSelectedQuestion(q.id, q.text);
+    item.onclick = () => selectQuestion(q.id, item);
     list.appendChild(item);
   });
+  selectedQuestionId = null;
+  document.getElementById("ask-button").classList.add("hidden");
   showScreen("questions-screen");
 }
 
-// Show selected question screen
-function showSelectedQuestion(questionId, questionText) {
+// Select question
+function selectQuestion(questionId, element) {
   selectedQuestionId = questionId;
-  selectedQuestionText = questionText;
-  document.getElementById("selected-question-text").textContent = questionText;
-  showScreen("selected-question-screen");
+  document.querySelectorAll(".question-item").forEach((item) => {
+    item.classList.remove("selected");
+  });
+  element.classList.add("selected");
+  document.getElementById("ask-button").classList.remove("hidden");
 }
 
 // Show answer screen
@@ -113,10 +116,12 @@ async function showAnswer() {
   if (!selectedQuestionId) return;
 
   const data = await loadData();
+  let questionText = "";
   let answers = [];
   data.categories.forEach((category) => {
     const question = category.questions.find((q) => q.id === selectedQuestionId);
     if (question) {
+      questionText = question.text;
       answers = question.answers;
     }
   });
@@ -128,7 +133,7 @@ async function showAnswer() {
   try {
     await db.collection("history").add({
       userId: telegramUser.id,
-      question: selectedQuestionText,
+      question: questionText,
       answer,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
@@ -140,14 +145,13 @@ async function showAnswer() {
   showAd();
 
   selectedQuestionId = null;
-  selectedQuestionText = "";
   showScreen("answer-screen");
 }
 
 // Share answer
 function shareAnswer() {
   const answer = document.getElementById("answer-text").textContent;
-  const shareText = `ဗေဒင်အဖြေ: ${answer} \nသင်လည်း ဗေဒင်မေးကြည့်ပါ: [Your Bot Link]`;
+  const shareText = `ဗေဦဦဦဦဦဦဦဦဦဦဒင်အဖြေ: ${answer} \nသင်လည်း ဗေဦဦဦဦဦဦဦဦဦဦဒင်မေးကြည့်ပါ: [Your Bot Link]`;
   if (window.Telegram.WebApp.shareTo) {
     window.Telegram.WebApp.shareTo(shareText);
   } else {
@@ -191,8 +195,29 @@ async function showHistory() {
   showScreen("history-screen");
 }
 
+// Initialize particles
+function initParticles() {
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 100, density: { enable: true, value_area: 800 } },
+      color: { value: "#ffffff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.5, random: true },
+      size: { value: 3, random: true },
+      move: { enable: true, speed: 1, direction: "none", random: true },
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } },
+      modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } },
+    },
+    retina_detect: true,
+  });
+}
+
 // Initialize app
 document.addEventListener("DOMContentLoaded", () => {
   initAdSonar();
+  initParticles();
   showScreen("home-screen");
 });
