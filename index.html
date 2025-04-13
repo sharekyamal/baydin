@@ -22,11 +22,11 @@
       <div id="home-screen" class="screen">
         <h1 class="glow-text">လက်ထောက်ဗေဒင်</h1>
         <button class="magic-button" onclick="showCategories()">
-          ဗေဒင်မေးရန်
+          ဗေဦဦဒင်မေးရန်
         </button>
-        <div id="adsonar-banner" class="ad-banner">
-          <!-- AdSonar Banner Placeholder -->
-          <div class="ad-placeholder">AdSonar Banner Ad (300x250)</div>
+        <div class="daily-prediction highlight">
+          <h3 class="glow-text">ယနေ့ဗေဒင်</h3>
+          <p id="daily-text" class="glow-text"></p>
         </div>
       </div>
 
@@ -40,9 +40,6 @@
       <div id="questions-screen" class="screen hidden">
         <h2 id="category-title" class="glow-text"></h2>
         <div id="question-list" class="question-list"></div>
-        <button id="ask-button" class="magic-button hidden" onclick="showAnswer()">
-          ဗေဒင်မေးမည်
-        </button>
       </div>
 
       <!-- Answer Screen -->
@@ -65,10 +62,10 @@
 
       <!-- Footer -->
       <div class="footer">
-        <button class="footer-button magic-button" onclick="showScreen('home-screen')">
+        <button class="footer-button" onclick="showScreen('home-screen')">
           <span class="icon">🏠</span> Home
         </button>
-        <button class="footer-button magic-button" onclick="showScreen('history-screen')">
+        <button class="footer-button" onclick="showScreen('history-screen')">
           <span class="icon">📜</span> History
         </button>
       </div>
