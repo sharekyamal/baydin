@@ -116,17 +116,8 @@ async function shareAnswer() {
   const encodedText = encodeURIComponent(shareText);
 
   try {
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.shareToStory) {
-      // Share to Telegram Stories
-      window.Telegram.WebApp.shareToStory({
-        text: shareText,
-        attachment: {
-          type: "webpage",
-          url: botLink
-        }
-      });
-    } else if (window.Telegram && window.Telegram.WebApp) {
-      // Fallback to chat sharing
+    if (window.Telegram && window.Telegram.WebApp) {
+      // Share to Telegram chats
       const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodedText}`;
       window.Telegram.WebApp.openTelegramLink(shareUrl);
     } else if (navigator.share) {
