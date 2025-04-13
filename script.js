@@ -1,6 +1,7 @@
 // Initialize Telegram WebApp
 window.Telegram.WebApp.ready();
 const telegramUser = window.Telegram.WebApp.initDataUnsafe.user || { id: "test_user" };
+console.log("Telegram User ID:", telegramUser.id);
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -13,6 +14,7 @@ const firebaseConfig = {
   measurementId: "G-H1K543SS8T"
 };
 
+// Initialize Firebase using the global firebase object from CDN
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -65,6 +67,25 @@ async function showCategories() {
   showScreen("categories-screen");
 }
 
+// Show questions screen
+async function showQuestions(categoryId) {
+  const data = await loadData();
+  const category = data.categories.find((c) => c.id === categoryId);
+  if (!category) return;
+
+  document.getElementById("category-title").textContent = category.name;
+  const list = document.getElementById("question-list");
+  list.innerHTML = "";
+  category.questions.forEach((q) => {
+    const item = document.createElement("div");
+    item.className = "question-item";
+    item.textContent = q.text;
+    item.onclick = () => showAnswer(q.id);
+    list.appendChild(item);
+  });
+  showScreen("questions-screen");
+}
+
 // Show answer screen
 async function showAnswer(questionId) {
   const data = await loadData();
@@ -100,7 +121,6 @@ async function showAnswer(questionId) {
   showAd();
 
   showScreen("answer-screen");
-}
 }
 
 // Share answer as image
