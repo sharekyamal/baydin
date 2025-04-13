@@ -16,28 +16,38 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Click counter for interstitial ads
-let clickCount = 0;
+// Global click counter for interstitial ads
+window.clickCount = 0; // Global scope မှာ သတ်မှတ်ပြီး window object မှာ ထားတယ်
 
-// Sample AdSonar initialization
+// Sample AdSonar initialization with error handling
 function initAdSonar() {
   console.log("Initializing AdSonar...");
-  // Load banner ad in the current screen's nms_banner div
-  const bannerDiv = document.querySelector("#nms_banner:not(.loaded)");
-  if (bannerDiv) {
-    window.Sonar.show({ adUnit: "nms_banner" });
-    bannerDiv.classList.add("loaded"); // Mark as loaded to prevent multiple loads
+  try {
+    const bannerDiv = document.querySelector("#nms_banner:not(.loaded)");
+    if (bannerDiv && typeof window.Sonar !== "undefined") {
+      window.Sonar.show({ adUnit: "nms_banner" });
+      bannerDiv.classList.add("loaded"); // Mark as loaded to prevent multiple loads
+    } else {
+      console.warn("AdSonar not loaded or no banner div found.");
+    }
+  } catch (error) {
+    console.error("AdSonar initialization error:", error);
   }
 }
 
 // Track clicks and show interstitial ad every 5 clicks
 function trackClick() {
-  clickCount++;
-  console.log(`Click count: ${clickCount}`);
-  if (clickCount >= 5) {
-    console.log("Showing AdSonar interstitial ad...");
-    window.Sonar.show({ adUnit: "nms_inter" });
-    clickCount = 0; // Reset counter
+  window.clickCount++;
+  console.log(`Click count: ${window.clickCount}`);
+  try {
+    if (window.clickCount >= 5 && typeof window.Sonar !== "undefined") {
+      console.log("Showing AdSonar interstitial ad...");
+      window.Sonar.show({ adUnit: "nms_inter" });
+      window.clickCount = 0; // Reset counter
+    }
+  } catch (error) {
+    console.error("Interstitial ad error:", error);
+    window.clickCount = 0; // Reset counter to prevent infinite loop
   }
 }
 
@@ -64,65 +74,77 @@ function showScreen(screenId) {
 
 // Show categories screen
 async function showCategories() {
-  const data = await loadData();
-  const grid = document.getElementById("categories-grid");
-  grid.innerHTML = "";
-  data.categories.forEach((category) => {
-    const item = document.createElement("div");
-    item.className = "grid-item";
-    item.innerHTML = `
-      <div class="icon">${category.icon}</div>
-      <div>${category.name}</div>
-    `;
-    item.onclick = () => {
-      trackClick();
-      showQuestions(category.id);
-    };
-    grid.appendChild(item);
-  });
-  showScreen("categories-screen");
+  try {
+    const data = await loadData();
+    const grid = document.getElementById("categories-grid");
+    grid.innerHTML = "";
+    data.categories.forEach((category) => {
+      const item = document.createElement("div");
+      item.className = "grid-item";
+      item.innerHTML = `
+        <div class="icon">${category.icon}</div>
+        <div>${category.name}</div>
+      `;
+      item.onclick = () => {
+        trackClick();
+        showQuestions(category.id);
+      };
+      grid.appendChild(item);
+    });
+    showScreen("categories-screen");
+  } catch (error) {
+    console.error("Error in showCategories:", error);
+  }
 }
 
 // Show questions screen
 async function showQuestions(categoryId) {
-  const data = await loadData();
-  const category = data.categories.find((c) => c.id === categoryId);
-  if (!category) return;
+  try {
+    const data = await loadData();
+    const category = data.categories.find((c) => c.id === categoryId);
+    if (!category) return;
 
-  document.getElementById("category-title").textContent = category.name;
-  const list = document.getElementById("question-list");
-  list.innerHTML = "";
-  category.questions.forEach((q) => {
-    const item = document.createElement("div");
-    item.className = "question-item";
-    item.textContent = q.text;
-    item.onclick = () => {
-      trackClick();
-      showAnswer(q.id);
-    };
-    list.appendChild(item);
-  });
-  showScreen("questions-screen");
+    document.getElementById("category-title").textContent = category.name;
+    const list = document.getElementById("question-list");
+    list.innerHTML = "";
+    category.questions.forEach((q) => {
+      const item = document.createElement("div");
+      item.className = "question-item";
+      item.textContent = q.text;
+      item.onclick = () => {
+        trackClick();
+        showAnswer(q.id);
+      };
+      list.appendChild(item);
+    });
+    showScreen("questions-screen");
+  } catch (error) {
+    console.error("Error in showQuestions:", error);
+  }
 }
 
 // Show answer screen
 async function showAnswer(questionId) {
-  const data = await loadData();
-  let questionText = "";
-  let answers = [];
-  data.categories.forEach((category) => {
-    const question = category.questions.find((q) => q.id === questionId);
-    if (question) {
-      questionText = question.text;
-      answers = question.answers;
-    }
-  });
+  try {
+    const data = await loadData();
+    let questionText = "";
+    let answers = [];
+    data.categories.forEach((category) => {
+      const question = category.questions.find((q) => q.id === questionId);
+      if (question) {
+        questionText = question.text;
+        answers = question.answers;
+      }
+    });
 
-  const answer = answers[Math.floor(Math.random() * answers.length)];
-  document.getElementById("question-text").textContent = questionText;
-  document.getElementById("answer-text").textContent = answer;
+    const answer = answers[Math.floor(Math.random() * answers.length)];
+    document.getElementById("question-text").textContent = questionText;
+    document.getElementById("answer-text").textContent = answer;
 
-  showScreen("answer-screen");
+    showScreen("answer-screen");
+  } catch (error) {
+    console.error("Error in showAnswer:", error);
+  }
 }
 
 // Share answer as text
