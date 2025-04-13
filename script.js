@@ -111,13 +111,23 @@ async function showAnswer(questionId) {
 async function shareAnswer() {
   const questionText = document.getElementById("question-text").textContent;
   const answerText = document.getElementById("answer-text").textContent;
-  const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- လက်ထောက်ဗေဒင်`;
+  const botLink = "https://t.me/YourBaydinBot"; // Replace with your actual bot link
+  const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- လက်ထောက်ဗေဒင်\nBot: ${botLink}`;
   const encodedText = encodeURIComponent(shareText);
 
   try {
-    if (window.Telegram && window.Telegram.WebApp) {
-      // Use Telegram WebApp's share functionality
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent("https://your-app-url.com")}&text=${encodedText}`;
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.shareToStory) {
+      // Share to Telegram Stories
+      window.Telegram.WebApp.shareToStory({
+        text: shareText,
+        attachment: {
+          type: "webpage",
+          url: botLink
+        }
+      });
+    } else if (window.Telegram && window.Telegram.WebApp) {
+      // Fallback to chat sharing
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodedText}`;
       window.Telegram.WebApp.openTelegramLink(shareUrl);
     } else if (navigator.share) {
       // Fallback to Web Share API
