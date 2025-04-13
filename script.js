@@ -111,7 +111,7 @@ async function showAnswer(questionId) {
 async function shareAnswer() {
   const questionText = document.getElementById("question-text").textContent;
   const answerText = document.getElementById("answer-text").textContent;
-  const botLink = "https://t.me/YourBaydinBot"; // Replace with your actual bot link
+  const botLink = "https://t.me/BayDinForU_bot"; // Replace with your actual bot link
   const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- လက်ထောက်ဗေဒင်\nBot: ${botLink}`;
   const encodedText = encodeURIComponent(shareText);
 
