@@ -2,7 +2,7 @@
 <html lang="my">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>လက်ထောက်ဗေဒင်</title>
     <link rel="stylesheet" href="styles.css" />
     <!-- Telegram WebApp Script -->
@@ -12,11 +12,8 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
-    <!-- Particle.js -->
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   </head>
   <body>
-    <div id="particles-js"></div>
     <div class="container">
       <!-- Home Screen -->
       <div id="home-screen" class="screen">
@@ -24,9 +21,8 @@
         <button class="magic-button" onclick="showCategories()">
           ဗေဦဦဒင်မေးရန်
         </button>
-        <div class="daily-prediction highlight">
-          <h3 class="glow-text">ယနေ့ဗေဒင်</h3>
-          <p id="daily-text" class="glow-text"></p>
+        <div id="adsonar-banner" class="adsonar-banner">
+          <!-- AdSonar Banner Ad (300x250) will be loaded here -->
         </div>
       </div>
 
@@ -45,7 +41,10 @@
       <!-- Answer Screen -->
       <div id="answer-screen" class="screen hidden">
         <h2 class="glow-text">ဗေဒင်အဖြေ</h2>
-        <div id="answer-text" class="answer-box"></div>
+        <div id="answer-content" class="answer-box">
+          <p id="question-text" class="question-text"></p>
+          <p id="answer-text"></p>
+        </div>
         <button class="magic-button" onclick="shareAnswer()">
           မျှဝေရန်
         </button>
@@ -63,10 +62,12 @@
       <!-- Footer -->
       <div class="footer">
         <button class="footer-button" onclick="showScreen('home-screen')">
-          <span class="icon">🏠</span> Home
+          <span class="icon">✨</span>
+          <span class="text">Home</span>
         </button>
         <button class="footer-button" onclick="showScreen('history-screen')">
-          <span class="icon">📜</span> History
+          <span class="icon">📖</span>
+          <span class="text">History</span>
         </button>
       </div>
     </div>
