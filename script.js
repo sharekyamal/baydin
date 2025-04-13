@@ -19,26 +19,13 @@ const db = firebase.firestore();
 // Sample AdSonar initialization (replace with actual credentials)
 function initAdSonar() {
   console.log("Initializing AdSonar...");
-  // AdSonar.init({
-  //   appId: "YOUR_APP_ID",
-  //   apiKey: "YOUR_API_KEY",
-  // });
-  // Load Banner Ad
   const bannerDiv = document.getElementById("adsonar-banner");
   bannerDiv.innerHTML = '<div>AdSonar Banner Ad (300x250)</div>'; // Placeholder
-  // AdSonar.showBanner({
-  //   adUnitId: "your-ad-unit-id",
-  //   size: "300x250",
-  //   container: bannerDiv,
-  // });
 }
 
 // Show AdSonar ad (placeholder)
 function showAd() {
   console.log("Showing AdSonar interstitial ad...");
-  // AdSonar.showInterstitial({
-  //   onClose: () => console.log("Ad closed"),
-  // });
 }
 
 // Load JSON data
@@ -122,8 +109,10 @@ async function showAnswer(questionId) {
       answer,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
+    console.log("Successfully saved to Firestore");
   } catch (error) {
-    console.error("Error saving to Firebase:", error);
+    console.error("Error saving to Firestore:", error.message);
+    alert("ဒေတာသိမ်းမှု မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။");
   }
 
   // Show ad
@@ -171,6 +160,7 @@ async function showHistory() {
       .get();
     if (snapshot.empty) {
       list.innerHTML = "<li>မှတ်တမ်းမရှိသေးပါ</li>";
+      console.log("No history found for user:", telegramUser.id);
     } else {
       snapshot.forEach((doc) => {
         const item = doc.data();
@@ -184,10 +174,11 @@ async function showHistory() {
         `;
         list.appendChild(li);
       });
+      console.log("Successfully loaded history");
     }
   } catch (error) {
-    console.error("Error loading history:", error);
-    list.innerHTML = "<li>မှတ်တမ်းများကို မဖတ်နိုင်ပါ</li>";
+    console.error("Error loading history from Firestore:", error.message);
+    list.innerHTML = "<li>မှတ်တမ်းများကို မဖတ်နိုင်ပါ - " + error.message + "</li>";
   }
   showScreen("history-screen");
 }
