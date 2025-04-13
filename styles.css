@@ -29,7 +29,7 @@ body {
 
 .screen {
   text-align: center;
-  padding-bottom: 80px; /* Increased for footer */
+  padding-bottom: 60px;
   animation: slideIn 0.5s ease-in;
 }
 
@@ -57,31 +57,14 @@ body {
 .magic-button {
   background: linear-gradient(45deg, #ff00ff, #00ffff);
   border: none;
-  padding: 12px 24px;
+  padding: 15px 30px;
   border-radius: 25px;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
   margin: 10px;
-  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.magic-button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s;
-}
-
-.magic-button:hover::before {
-  left: 100%;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .magic-button:hover {
@@ -133,11 +116,6 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
-.question-item.selected {
-  background: rgba(255, 255, 255, 0.4);
-  border: 2px solid #00ffff;
-}
-
 .answer-box {
   background: rgba(255, 255, 255, 0.2);
   padding: 20px;
@@ -158,21 +136,23 @@ body {
   }
 }
 
-.ad-banner {
+.daily-prediction {
   margin-top: 20px;
-  padding: 10px;
-  text-align: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }
 
-.ad-placeholder {
-  background: #ccc;
-  color: #333;
-  width: 300px;
-  height: 250px;
-  line-height: 250px;
-  margin: 0 auto;
-  border-radius: 10px;
-  font-size: 1rem;
+.daily-prediction.highlight {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 .footer {
@@ -180,25 +160,27 @@ body {
   bottom: 0;
   width: 100%;
   max-width: 600px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #fff;
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
   z-index: 2;
-  backdrop-filter: blur(5px);
 }
 
 .footer-button {
-  font-size: 0.9rem;
-  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: #4b0082;
+  font-size: 1rem;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .footer-button .icon {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   margin-bottom: 5px;
 }
 
@@ -223,26 +205,11 @@ body {
   }
 
   .magic-button {
-    padding: 10px 20px;
+    padding: 12px 20px;
     font-size: 1rem;
   }
 
-  .footer {
-    padding: 8px 0;
-  }
-
-  .footer-button {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  .footer-button .icon {
-    font-size: 1.2rem;
-  }
-
-  .ad-placeholder {
-    width: 250px;
-    height: 200px;
-    line-height: 200px;
+  .daily-prediction.highlight {
+    padding: 10px;
   }
 }
