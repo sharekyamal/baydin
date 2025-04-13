@@ -65,25 +65,6 @@ async function showCategories() {
   showScreen("categories-screen");
 }
 
-// Show questions screen
-async function showQuestions(categoryId) {
-  const data = await loadData();
-  const category = data.categories.find((c) => c.id === categoryId);
-  if (!category) return;
-
-  document.getElementById("category-title").textContent = category.name;
-  const list = document.getElementById("question-list");
-  list.innerHTML = "";
-  category.questions.forEach((q) => {
-    const item = document.createElement("div");
-    item.className = "question-item";
-    item.textContent = q.text;
-    item.onclick = () => showAnswer(q.id);
-    list.appendChild(item);
-  });
-  showScreen("questions-screen");
-}
-
 // Show answer screen
 async function showAnswer(questionId) {
   const data = await loadData();
@@ -112,13 +93,14 @@ async function showAnswer(questionId) {
     console.log("Successfully saved to Firestore");
   } catch (error) {
     console.error("Error saving to Firestore:", error.message);
-    alert("ဒေတာသိမ်းမှု မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။");
+    alert(`ဒေတာသိမ်းမှု မအောင်မြင်ပါ။ အမှား: ${error.message}\nကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။`);
   }
 
   // Show ad
   showAd();
 
   showScreen("answer-screen");
+}
 }
 
 // Share answer as image
