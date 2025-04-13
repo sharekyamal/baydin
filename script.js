@@ -1,3 +1,8 @@
+// Import Firebase Modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, collection, addDoc, query, where, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+
 // Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBS0gyUpvvvp8EoEQpsbNNZ4HOHeJcMzFI",
@@ -10,9 +15,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const analytics = firebase.analytics();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const analytics = getAnalytics(app);
 
 // AdSonar Banner Ad (300x250)
 window.AdSonar = window.AdSonar || {};
@@ -98,13 +103,17 @@ async function showAnswer(categoryIndex, questionIndex) {
 
   // Save to Firestore
   const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "anonymous";
-  await db.collection("history").add({
-    userId: userId,
-    category: category.name,
-    question: question.text,
-    answer: randomAnswer,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, "history"), {
+      userId: userId,
+      category: category.name,
+      question: question.text,
+      answer: randomAnswer,
+      timestamp: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error("Error saving to Firestore: ", error);
+  }
 }
 
 // Share Answer
@@ -131,17 +140,22 @@ async function showHistory() {
   const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "anonymous";
   const historyList = document.getElementById("history-list");
   historyList.innerHTML = "";
-  const querySnapshot = await db
-    .collection("history")
-    .where("userId", "==", userId)
-    .orderBy("timestamp", "desc")
-    .get();
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    const li = document.createElement("li");
-    li.textContent = `${data.category}: ${data.question} - ${data.answer}`;
-    historyList.appendChild(li);
-  });
+  try {
+    const q = query(
+      collection(db, "history"),
+      where("userId", "==", userId),
+      orderBy("timestamp", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.textContent = `${data.category}: ${data.question} - ${data.answer}`;
+      historyList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error fetching history: ", error);
+  }
   showScreen("history-screen");
 }
 
