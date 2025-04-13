@@ -14,6 +14,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // Sample AdSonar initialization (replace with actual credentials)
 function initAdSonar() {
@@ -106,35 +107,88 @@ async function showAnswer(questionId) {
   showScreen("answer-screen");
 }
 
-// Share answer as image
+// Share answer as text
 async function shareAnswer() {
-  const answerContent = document.getElementById("answer-content");
-  try {
-    const canvas = await html2canvas(answerContent, {
-      backgroundColor: null, // Preserve the background
-      useCORS: true,
-      scale: 2, // Improve image quality
-    });
-    const image = canvas.toDataURL("image/png");
+  const questionText = document.getElementById("question-text").textContent;
+  const answerText = document.getElementById("answer-text").textContent;
+  const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- လက်ထောက်ဗေဒင်`;
 
-    if (window.Telegram.WebApp.shareTo) {
-      window.Telegram.WebApp.shareTo(image);
+  try {
+    if (window.Telegram.WebApp) {
+      window.Telegram.WebApp.sendData(shareText);
+    } else if (navigator.share) {
+      await navigator.share({
+        text: shareText,
+      });
     } else {
-      const blob = await (await fetch(image)).blob();
-      const file = new File([blob], "answer.png", { type: "image/png" });
-      navigator.share({
-        files: [file],
-        text: "ဗေဒင်အဖြေ",
-      }).catch((error) => console.error("Error sharing:", error));
+      throw new Error("Sharing not supported");
     }
   } catch (error) {
-    console.error("Error generating image:", error);
-    alert("မျှဝေရန် မအောင်မြင်ပါ။");
+    console.error("Error sharing:", error);
+    alert("မျှဝေရန် မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။");
   }
+}
+
+// Falling stars animation
+function initStarsAnimation() {
+  const canvas = document.getElementById("stars-canvas");
+  const ctx = canvas.getContext("2d");
+
+  // Set canvas size
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Resize canvas on window resize
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Star object
+  const stars = [];
+  const numStars = 50;
+
+  function Star() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 1;
+    this.speed = Math.random() * 2 + 1;
+
+    this.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.fill();
+    };
+
+    this.update = function () {
+      this.y += this.speed;
+      if (this.y > canvas.height) {
+        this.y = 0;
+        this.x = Math.random() * canvas.width;
+      }
+      this.draw();
+    };
+  }
+
+  // Initialize stars
+  for (let i = 0; i < numStars; i++) {
+    stars.push(new Star());
+  }
+
+  // Animation loop
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach((star) => star.update());
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
 
 // Initialize app
 document.addEventListener("DOMContentLoaded", () => {
   initAdSonar();
+  initStarsAnimation();
   showScreen("home-screen");
 });
