@@ -14,7 +14,6 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const analytics = firebase.analytics();
 
 // Sample AdSonar initialization (replace with actual credentials)
 function initAdSonar() {
@@ -45,8 +44,6 @@ function showScreen(screenId) {
     screen.classList.add("hidden");
   });
   document.getElementById(screenId).classList.remove("hidden");
-  // Log screen view to Firebase Analytics
-  analytics.logEvent('screen_view', { screen_name: screenId });
 }
 
 // Show categories screen
@@ -103,13 +100,6 @@ async function showAnswer(questionId) {
   document.getElementById("question-text").textContent = questionText;
   document.getElementById("answer-text").textContent = answer;
 
-  // Log answer event to Firebase Analytics
-  analytics.logEvent('view_answer', {
-    question_id: questionId,
-    question_text: questionText,
-    answer_text: answer
-  });
-
   // Show ad
   showAd();
 
@@ -126,9 +116,6 @@ async function shareAnswer() {
       scale: 2, // Improve image quality
     });
     const image = canvas.toDataURL("image/png");
-
-    // Log share event to Firebase Analytics
-    analytics.logEvent('share_answer');
 
     if (window.Telegram.WebApp.shareTo) {
       window.Telegram.WebApp.shareTo(image);
