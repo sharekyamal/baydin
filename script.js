@@ -2,20 +2,6 @@
 window.Telegram.WebApp.ready();
 const telegramUser = window.Telegram.WebApp.initDataUnsafe.user || { id: "test_user" };
 
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyBS0gyUpvvvp8EoEQpsbNNZ4HOHeJcMzFI",
-  authDomain: "natymetsi.firebaseapp.com",
-  projectId: "natymetsi",
-  storageBucket: "natymetsi.firebasestorage.app",
-  messagingSenderId: "1026866134400",
-  appId: "1:1026866134400:web:2f577f051b2d564a84d565",
-  measurementId: "G-H1K543SS8T"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
 // Sample AdSonar initialization (replace with actual credentials)
 function initAdSonar() {
   console.log("Initializing AdSonar...");
@@ -101,20 +87,6 @@ async function showAnswer(questionId) {
   document.getElementById("question-text").textContent = questionText;
   document.getElementById("answer-text").textContent = answer;
 
-  // Save to Firebase
-  try {
-    await db.collection("history").add({
-      userId: telegramUser.id,
-      question: questionText,
-      answer,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    console.log("Successfully saved to Firestore");
-  } catch (error) {
-    console.error("Error saving to Firestore:", error.message);
-    alert("ဒေတာသိမ်းမှု မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။");
-  }
-
   // Show ad
   showAd();
 
@@ -146,41 +118,6 @@ async function shareAnswer() {
     console.error("Error generating image:", error);
     alert("မျှဝေရန် မအောင်မြင်ပါ။");
   }
-}
-
-// Show history screen
-async function showHistory() {
-  const list = document.getElementById("history-list");
-  list.innerHTML = "";
-  try {
-    const snapshot = await db
-      .collection("history")
-      .where("userId", "==", telegramUser.id)
-      .orderBy("timestamp", "desc")
-      .get();
-    if (snapshot.empty) {
-      list.innerHTML = "<li>မှတ်တမ်းမရှိသေးပါ</li>";
-      console.log("No history found for user:", telegramUser.id);
-    } else {
-      snapshot.forEach((doc) => {
-        const item = doc.data();
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <p><strong>မေးခွန်း:</strong> ${item.question}</p>
-          <p><strong>အဖြေ:</strong> ${item.answer}</p>
-          <p><strong>အချိန်:</strong> ${
-            item.timestamp ? new Date(item.timestamp.toDate()).toLocaleString() : "N/A"
-          }</p>
-        `;
-        list.appendChild(li);
-      });
-      console.log("Successfully loaded history");
-    }
-  } catch (error) {
-    console.error("Error loading history from Firestore:", error.message);
-    list.innerHTML = "<li>မှတ်တမ်းများကို မဖတ်နိုင်ပါ - " + error.message + "</li>";
-  }
-  showScreen("history-screen");
 }
 
 // Initialize app
