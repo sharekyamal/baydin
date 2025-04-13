@@ -23,17 +23,9 @@ function initAdSonar() {
   //   appId: "YOUR_APP_ID",
   //   apiKey: "YOUR_API_KEY",
   // });
-  // Banner ad
-  console.log("Loading AdSonar banner...");
-  // AdSonar.loadBanner({
-  //   adUnitId: "YOUR_BANNER_AD_UNIT_ID",
-  //   containerId: "adsonar-banner",
-  //   width: 300,
-  //   height: 250,
-  // });
 }
 
-// Show AdSonar interstitial ad (placeholder)
+// Show AdSonar ad (placeholder)
 function showAd() {
   console.log("Showing AdSonar interstitial ad...");
   // AdSonar.showInterstitial({
@@ -78,8 +70,6 @@ async function showCategories() {
   showScreen("categories-screen");
 }
 
-let selectedQuestionId = null;
-
 // Show questions screen
 async function showQuestions(categoryId) {
   const data = await loadData();
@@ -93,33 +83,19 @@ async function showQuestions(categoryId) {
     const item = document.createElement("div");
     item.className = "question-item";
     item.textContent = q.text;
-    item.onclick = () => selectQuestion(q.id, item);
+    item.onclick = () => showAnswer(q.id);
     list.appendChild(item);
   });
-  selectedQuestionId = null;
-  document.getElementById("ask-button").classList.add("hidden");
   showScreen("questions-screen");
 }
 
-// Select question
-function selectQuestion(questionId, element) {
-  selectedQuestionId = questionId;
-  document.querySelectorAll(".question-item").forEach((item) => {
-    item.classList.remove("selected");
-  });
-  element.classList.add("selected");
-  document.getElementById("ask-button").classList.remove("hidden");
-}
-
 // Show answer screen
-async function showAnswer() {
-  if (!selectedQuestionId) return;
-
+async function showAnswer(questionId) {
   const data = await loadData();
   let questionText = "";
   let answers = [];
   data.categories.forEach((category) => {
-    const question = category.questions.find((q) => q.id === selectedQuestionId);
+    const question = category.questions.find((q) => q.id === questionId);
     if (question) {
       questionText = question.text;
       answers = question.answers;
@@ -144,14 +120,13 @@ async function showAnswer() {
   // Show ad
   showAd();
 
-  selectedQuestionId = null;
   showScreen("answer-screen");
 }
 
 // Share answer
 function shareAnswer() {
   const answer = document.getElementById("answer-text").textContent;
-  const shareText = `ဗေဦဦဦဦဦဦဦဦဦဦဒင်အဖြေ: ${answer} \nသင်လည်း ဗေဦဦဦဦဦဦဦဦဦဦဒင်မေးကြည့်ပါ: [Your Bot Link]`;
+  const shareText = `ဗေဦဦဒင်အဖြေ: ${answer} \nသင်လည်း ဗေဦဦဦဦဒင်မေးကြည့်ပါ: [Your Bot Link]`;
   if (window.Telegram.WebApp.shareTo) {
     window.Telegram.WebApp.shareTo(shareText);
   } else {
@@ -195,6 +170,21 @@ async function showHistory() {
   showScreen("history-screen");
 }
 
+// Load daily prediction
+async function loadDailyPrediction() {
+  const data = await loadData();
+  const allAnswers = [];
+  data.categories.forEach((category) => {
+    category.questions.forEach((q) => {
+      allAnswers.push(...q.answers);
+    });
+  });
+  const today = new Date().toDateString();
+  const seed = today.split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const index = seed % allAnswers.length;
+  document.getElementById("daily-text").textContent = allAnswers[index] || "ယနေ့ အခွင့်အလမ်းသစ်တွေ စောင့်ကြိုနေပါတယ်။";
+}
+
 // Initialize particles
 function initParticles() {
   particlesJS("particles-js", {
@@ -219,5 +209,6 @@ function initParticles() {
 document.addEventListener("DOMContentLoaded", () => {
   initAdSonar();
   initParticles();
+  loadDailyPrediction();
   showScreen("home-screen");
 });
