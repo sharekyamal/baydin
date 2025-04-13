@@ -157,7 +157,7 @@ async function showAnswer(questionId) {
 function shareAnswer() {
   const question = document.getElementById("question-text").textContent;
   const answer = document.getElementById("answer-text").textContent;
-  const shareText = `ဗေဦဦဒင်\nမေးခွန်း: ${question}\nအဖြေ: ${answer}\nသင်လည်း ဗေဦဦဒင်မေးကြည့်ပါ: [Your Bot Link]`;
+  const shareText = `ဗေဦဦဒင်\nမေးခွန်း: ${question}\nအဖြေ: ${answer}\nသင်လည်း ဗေဦဦဒင်မေးကြည့်ပါ: [@BayDinForU_bot]`;
   
   try {
     // For Telegram WebApp
