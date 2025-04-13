@@ -6,21 +6,12 @@
 }
 
 body {
-  background: linear-gradient(135deg, #4b0082, #00008b);
+  background: url('https://media1.giphy.com/media/g0NZo5jXrlTsRKD5B8/200w.gif') repeat;
+  background-size: 200px; /* Matches GIF width for seamless tiling */
   color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-}
-
-#stars-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* Behind everything */
-  pointer-events: none;
 }
 
 .container {
