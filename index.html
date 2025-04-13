@@ -9,6 +9,11 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- AdSonar Placeholder (Replace with actual SDK) -->
     <script src="https://adsonar.com/sdk.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"></script>
+    <!-- Firebase Analytics SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js"></script>
   </head>
   <body>
     <div class="container">
@@ -49,8 +54,16 @@
           နောက်မေးခွန်းမေးရန်
         </button>
       </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <button class="footer-button" onclick="showScreen('home-screen')">
+          <span class="icon">✨</span>
+          <span class="text">Home</span>
+        </button>
+      </div>
     </div>
 
     <script src="script.js"></script>
-  </body>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92fac8964e18bcb4',t:'MTc0NDU0NTQyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92fb1bd0a83fbff1',t:'MTc0NDU0ODgzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
