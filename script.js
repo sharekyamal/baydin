@@ -16,16 +16,29 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Sample AdSonar initialization (replace with actual credentials)
+// Click counter for interstitial ads
+let clickCount = 0;
+
+// Sample AdSonar initialization
 function initAdSonar() {
   console.log("Initializing AdSonar...");
-  const bannerDiv = document.getElementById("adsonar-banner");
-  bannerDiv.innerHTML = '<div>AdSonar Banner Ad (300x250)</div>'; // Placeholder
+  // Load banner ad in the current screen's nms_banner div
+  const bannerDiv = document.querySelector("#nms_banner:not(.loaded)");
+  if (bannerDiv) {
+    window.Sonar.show({ adUnit: "nms_banner" });
+    bannerDiv.classList.add("loaded"); // Mark as loaded to prevent multiple loads
+  }
 }
 
-// Show AdSonar ad (placeholder)
-function showAd() {
-  console.log("Showing AdSonar interstitial ad...");
+// Track clicks and show interstitial ad every 5 clicks
+function trackClick() {
+  clickCount++;
+  console.log(`Click count: ${clickCount}`);
+  if (clickCount >= 5) {
+    console.log("Showing AdSonar interstitial ad...");
+    window.Sonar.show({ adUnit: "nms_inter" });
+    clickCount = 0; // Reset counter
+  }
 }
 
 // Load JSON data
@@ -45,6 +58,8 @@ function showScreen(screenId) {
     screen.classList.add("hidden");
   });
   document.getElementById(screenId).classList.remove("hidden");
+  // Initialize banner ad for the new screen
+  initAdSonar();
 }
 
 // Show categories screen
@@ -59,7 +74,10 @@ async function showCategories() {
       <div class="icon">${category.icon}</div>
       <div>${category.name}</div>
     `;
-    item.onclick = () => showQuestions(category.id);
+    item.onclick = () => {
+      trackClick();
+      showQuestions(category.id);
+    };
     grid.appendChild(item);
   });
   showScreen("categories-screen");
@@ -78,7 +96,10 @@ async function showQuestions(categoryId) {
     const item = document.createElement("div");
     item.className = "question-item";
     item.textContent = q.text;
-    item.onclick = () => showAnswer(q.id);
+    item.onclick = () => {
+      trackClick();
+      showAnswer(q.id);
+    };
     list.appendChild(item);
   });
   showScreen("questions-screen");
@@ -101,14 +122,12 @@ async function showAnswer(questionId) {
   document.getElementById("question-text").textContent = questionText;
   document.getElementById("answer-text").textContent = answer;
 
-  // Show ad
-  showAd();
-
   showScreen("answer-screen");
 }
 
 // Share answer as text
 async function shareAnswer() {
+  trackClick();
   const questionText = document.getElementById("question-text").textContent;
   const answerText = document.getElementById("answer-text").textContent;
   const botLink = "https://t.me/BayDinForU_bot"; // Replace with your actual bot link
