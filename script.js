@@ -1,7 +1,6 @@
 // Initialize Telegram WebApp
 window.Telegram.WebApp.ready();
 const telegramUser = window.Telegram.WebApp.initDataUnsafe.user || { id: "test_user" };
-console.log("Telegram User ID:", telegramUser.id);
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -14,7 +13,6 @@ const firebaseConfig = {
   measurementId: "G-H1K543SS8T"
 };
 
-// Initialize Firebase using the global firebase object from CDN
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -114,7 +112,7 @@ async function showAnswer(questionId) {
     console.log("Successfully saved to Firestore");
   } catch (error) {
     console.error("Error saving to Firestore:", error.message);
-    alert(`ဒေတာသိမ်းမှု မအောင်မြင်ပါ။ အမှား: ${error.message}\nကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။`);
+    alert("ဒေတာသိမ်းမှု မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။");
   }
 
   // Show ad
