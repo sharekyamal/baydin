@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="my">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Add CSP meta tag to allow scripts safely -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://telegram.org https://adsonar.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://firestore.googleapis.com wss://*.firebaseio.com;"
+    />
+    <title>လက်ထောက်ဗေဒင်</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Telegram WebApp Script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- AdSonar Placeholder (Replace with actual SDK) -->
+    <script src="https://adsonar.com/sdk.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
+  </head>
+  <body>
+    <div class="stars"></div>
+    <div class="container">
+      <!-- Home Screen -->
+      <div id="home-screen" class="screen">
+        <h1 class="glow-text">လက်ထောက်ဗေဒင်</h1>
+        <button class="magic-button" onclick="showCategories()">
+          ဗေဒင်မေးရန်
+        </button>
+        <div id="adsonar-banner" class="ad-banner">
+          <!-- AdSonar Banner Placeholder -->
+          <div class="ad-placeholder">AdSonar Banner Ad (300x250)</div>
+        </div>
+      </div>
+
+      <!-- Categories Screen -->
+      <div id="categories-screen" class="screen hidden">
+        <h2 class="glow-text">မေးခွန်းအမျိုးအစားများ</h2>
+        <div id="categories-grid" class="grid"></div>
+      </div>
+
+      <!-- Questions Screen -->
+      <div id="questions-screen" class="screen hidden">
+        <h2 id="category-title" class="glow-text"></h2>
+        <div id="question-list" class="question-list"></div>
+      </div>
+
+      <!-- Selected Question Screen -->
+      <div id="selected-question-screen" class="screen hidden">
+        <h2 class="glow-text">သင်ရွေးချယ်ထားသော မေးခွန်း</h2>
+        <div id="selected-question-text" class="answer-box"></div>
+        <button class="magic-button" onclick="showAnswer()">
+          ဗေဒင်မေးမည်
+        </button>
+      </div>
+
+      <!-- Answer Screen -->
+      <div id="answer-screen" class="screen hidden">
+        <h2 class="glow-text">ဗေဒင်အဖြေ</h2>
+        <div id="answer-text" class="answer-box"></div>
+        <button class="magic-button" onclick="shareAnswer()">
+          မျှဝေရန်
+        </button>
+        <button class="magic-button" onclick="showCategories()">
+          နောက်မေးခွန်းမေးရန်
+        </button>
+      </div>
+
+      <!-- History Screen -->
+      <div id="history-screen" class="screen hidden">
+        <h2 class="glow-text">မေးခွန်းမှတ်တမ်း</h2>
+        <ul id="history-list"></ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <button class="footer-button magic-button" onclick="showScreen('home-screen')">
+          <span class="icon">✨</span> Home
+        </button>
+        <button class="footer-button magic-button" onclick="showScreen('history-screen')">
+          <span class="icon">📖</span> History
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
