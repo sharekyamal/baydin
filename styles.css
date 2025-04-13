@@ -10,54 +10,13 @@ body {
   color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
-  position: relative;
 }
 
-/* Starry Background with CSS */
-.stars {
+#particles-js {
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  background: transparent;
   z-index: -1;
-  overflow: hidden;
-}
-
-.stars::before,
-.stars::after {
-  content: "";
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: #fff;
-  opacity: 0.7;
-  animation: twinkle 3s infinite;
-}
-
-.stars::before {
-  top: 10%;
-  left: 20%;
-  animation-delay: 0.5s;
-}
-
-.stars::after {
-  top: 30%;
-  left: 70%;
-  animation-delay: 1s;
-}
-
-@keyframes twinkle {
-  0% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.3;
-  }
 }
 
 .container {
@@ -70,7 +29,7 @@ body {
 
 .screen {
   text-align: center;
-  padding-bottom: 80px;
+  padding-bottom: 80px; /* Increased for footer */
   animation: slideIn 0.5s ease-in;
 }
 
@@ -174,6 +133,11 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.question-item.selected {
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid #00ffff;
+}
+
 .answer-box {
   background: rgba(255, 255, 255, 0.2);
   padding: 20px;
@@ -195,18 +159,15 @@ body {
 }
 
 .ad-banner {
-  margin: 20px auto;
+  margin-top: 20px;
   padding: 10px;
   text-align: center;
-  width: 100%;
-  max-width: 300px;
 }
 
 .ad-placeholder {
   background: #ccc;
   color: #333;
-  width: 100%;
-  max-width: 300px;
+  width: 300px;
   height: 250px;
   line-height: 250px;
   margin: 0 auto;
@@ -217,14 +178,11 @@ body {
 .footer {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
   width: 100%;
   max-width: 600px;
   background: rgba(255, 255, 255, 0.1);
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  justify-content: space-around;
   padding: 10px 0;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
   z-index: 2;
@@ -271,7 +229,6 @@ body {
 
   .footer {
     padding: 8px 0;
-    gap: 10px;
   }
 
   .footer-button {
@@ -284,8 +241,7 @@ body {
   }
 
   .ad-placeholder {
-    width: 100%;
-    max-width: 250px;
+    width: 250px;
     height: 200px;
     line-height: 200px;
   }
