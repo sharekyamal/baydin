@@ -115,10 +115,10 @@ async function shareAnswer() {
   const encodedText = encodeURIComponent(shareText);
 
   try {
-    if (window.Telegram.WebApp) {
-      // Use Telegram's share URL for more reliable sharing
-      const telegramShareUrl = `https://t.me/share/url?text=${encodedText}`;
-      window.Telegram.WebApp.openTelegramLink(telegramShareUrl);
+    if (window.Telegram && window.Telegram.WebApp) {
+      // Use Telegram WebApp's share functionality
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent("https://your-app-url.com")}&text=${encodedText}`;
+      window.Telegram.WebApp.openTelegramLink(shareUrl);
     } else if (navigator.share) {
       // Fallback to Web Share API
       await navigator.share({
@@ -131,7 +131,6 @@ async function shareAnswer() {
     }
   } catch (error) {
     console.error("Share error:", error);
-    // Try clipboard as a final fallback
     try {
       await navigator.clipboard.writeText(shareText);
       alert("မျှဝေရန် မအောင်မြင်ပါ။ စာသားကို ကူးယူပြီးပါပြီ။ သင်နှစ်သက်ရာ နေရာတွင် ထည့်သွင်းမျှဝေနိုင်ပါသည်။");
@@ -142,97 +141,8 @@ async function shareAnswer() {
   }
 }
 
-// Falling stars animation
-function initStarsAnimation() {
-  const canvas = document.getElementById("stars-canvas");
-  if (!canvas) {
-    console.error("Canvas not found!");
-    return;
-  }
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    console.error("Canvas context not available!");
-    return;
-  }
-
-  console.log("Initializing stars animation...");
-
-  // Set canvas size
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  // Resize canvas on window resize
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-
-  // Star object
-  const stars = [];
-  const numStars = 50;
-  const colors = ["#FFFFFF", "#FF69B4", "#00FFFF", "#FFD700"]; // White, Pink, Cyan, Gold
-
-  function Star() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height * -1; // Start above screen
-    this.size = Math.random() * 2 + 2; // Larger stars
-    this.baseSize = this.size;
-    this.speed = Math.random() * 3 + 2; // Faster fall
-    this.opacity = Math.random() * 0.5 + 0.5; // Varying opacity
-    this.color = colors[Math.floor(Math.random() * colors.length)]; // Random color
-    this.phase = Math.random() * Math.PI * 2; // For twinkling
-
-    this.draw = function () {
-      // Twinkle effect
-      const twinkle = this.baseSize * (1 + 0.3 * Math.sin(this.phase));
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, twinkle, 0, Math.PI * 2);
-      ctx.fillStyle = this.color;
-      ctx.globalAlpha = this.opacity;
-      ctx.fill();
-      ctx.globalAlpha = 1; // Reset alpha
-
-      // Draw faint trail
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(this.x, this.y - this.speed * 2);
-      ctx.strokeStyle = `${this.color}80`; // Semi-transparent
-      ctx.lineWidth = twinkle * 0.5;
-      ctx.stroke();
-    };
-
-    this.update = function () {
-      this.y += this.speed;
-      this.phase += 0.1; // Twinkle speed
-      if (this.y > canvas.height + this.size) {
-        this.y = -this.size;
-        this.x = Math.random() * canvas.width;
-        this.opacity = Math.random() * 0.5 + 0.5;
-        this.color = colors[Math.floor(Math.random() * colors.length)]; // New color
-        this.phase = Math.random() * Math.PI * 2;
-      }
-      this.draw();
-    };
-  }
-
-  // Initialize stars
-  for (let i = 0; i < numStars; i++) {
-    stars.push(new Star());
-  }
-
-  // Animation loop
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    stars.forEach((star) => star.update());
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-}
-
 // Initialize app
 document.addEventListener("DOMContentLoaded", () => {
   initAdSonar();
-  initStarsAnimation();
   showScreen("home-screen");
 });
