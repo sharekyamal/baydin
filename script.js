@@ -112,7 +112,7 @@ async function shareAnswer() {
   const questionText = document.getElementById("question-text").textContent;
   const answerText = document.getElementById("answer-text").textContent;
   const botLink = "https://t.me/BayDinForU_bot"; // Replace with your actual bot link
-  const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- လက်ထောက်ဗေဒင်\nBot: ${botLink}`;
+  const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- နတ်မျက်စိ\nBot: @BayDinForU_bot}`;
   const encodedText = encodeURIComponent(shareText);
 
   try {
