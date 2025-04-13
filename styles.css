@@ -6,9 +6,8 @@
 }
 
 body {
-  background: url('https://media1.giphy.com/media/g0NZo5jXrlTsRKD5B8/200w.gif') repeat;
-  
-  color: ;
+  background: linear-gradient(135deg, #4b0082, #00008b);
+  color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
