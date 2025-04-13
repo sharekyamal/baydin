@@ -10,36 +10,21 @@ body {
   color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .container {
   max-width: 600px;
+  margin: 0 auto;
   padding: 15px;
   position: relative;
   z-index: 1;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .screen {
   text-align: center;
-  padding: 20px 0;
+  padding-bottom: 50px;
   animation: slideIn 0.5s ease-in;
-  width: 100%;
-}
-
-#home-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
 }
 
 @keyframes slideIn {
@@ -210,6 +195,42 @@ body {
   height: 100%;
 }
 
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px;
+  background: transparent;
+  z-index: 2;
+}
+
+.footer-button {
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  border: none;
+  border-radius: 50px;
+  padding: 12px 25px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.footer-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+}
+
+.footer-button .icon {
+  font-size: 1.5rem;
+}
+
 /* Responsive adjustments for mobile */
 @media (max-width: 400px) {
   .container {
@@ -217,7 +238,7 @@ body {
   }
 
   .screen {
-    padding: 15px 0;
+    padding-bottom: 40px;
   }
 
   .glow-text {
@@ -265,6 +286,20 @@ body {
     font-size: 0.8rem;
     margin-bottom: 6px;
   }
+
+  .footer {
+    padding: 8px 15px;
+  }
+
+  .footer-button {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    gap: 4px;
+  }
+
+  .footer-button .icon {
+    font-size: 1.2rem;
+  }
 }
 
 /* Extra small screens (Telegram Mini App on very small devices) */
@@ -274,7 +309,7 @@ body {
   }
 
   .screen {
-    padding: 10px 0;
+    padding-bottom: 35px;
   }
 
   .glow-text {
@@ -316,5 +351,19 @@ body {
   .question-text {
     font-size: 0.7rem;
     margin-bottom: 5px;
+  }
+
+  .footer {
+    padding: 6px 10px;
+  }
+
+  .footer-button {
+    padding: 6px 15px;
+    font-size: 0.8rem;
+    gap: 3px;
+  }
+
+  .footer-button .icon {
+    font-size: 1rem;
   }
 }
