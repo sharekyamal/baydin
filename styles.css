@@ -1,9 +1,203 @@
-/* လက်ရှိ adsonar-banner အတွက် ရှိထားတဲ့ စတိုင် */
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Pyidaungsu", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background: linear-gradient(135deg, #1e1e2f 0%, #2e2e4f 100%);
+  color: #ffffff;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Screen */
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+/* Glow Text */
+.glow-text {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(45deg, #ff6b6b, #ffcc00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+/* Magic Button */
+.magic-button {
+  background: linear-gradient(45deg, #ff6b6b, #ffcc00);
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  color: #1e1e2f;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 10px 0;
+  width: 90%;
+  max-width: 300px;
+  text-align: center;
+}
+
+.magic-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+}
+
+.magic-button:active {
+  transform: scale(0.95);
+}
+
+/* Grid for Categories */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 10px;
+}
+
+/* Category Card */
+.category-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(5px);
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.category-card img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+}
+
+.category-card p {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+/* Question List */
+.question-list {
+  width: 100%;
+  max-width: 500px;
+  padding: 0 10px;
+}
+
+.question-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.question-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.question-item p {
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+/* Answer Box */
+.answer-box {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px 0;
+  backdrop-filter: blur(5px);
+}
+
+.question-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffcc00;
+  margin-bottom: 15px;
+}
+
+#answer-text {
+  font-size: 1rem;
+  color: #ffffff;
+  line-height: 1.5;
+}
+
+/* Footer */
+.footer {
+  position: sticky;
+  bottom: 0;
+  background: rgba(30, 30, 47, 0.8);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.footer-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.footer-button .icon {
+  font-size: 1.5rem;
+}
+
+/* Ad Container */
 .adsonar-banner {
   width: 100%;
   max-width: 300px;
   height: auto;
-  padding-top: 83.33%;
+  padding-top: 83.33%; /* Maintain aspect ratio for ads */
   margin: 15px auto;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
@@ -21,7 +215,6 @@
   height: 100%;
 }
 
-/* သီးသန့်ကြော်ငြာနေရာအတွက် ထပ်ထည့်လိုက်တဲ့ စတိုင် */
 #ad-container {
   transition: opacity 0.3s ease-in-out;
 }
@@ -34,8 +227,27 @@
   opacity: 1;
 }
 
-/* Responsive အတွက် ပြင်ဆင်မှု */
+/* Responsive Design */
 @media (max-width: 400px) {
+  .glow-text {
+    font-size: 1.8rem;
+  }
+
+  .magic-button {
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    max-width: 260px;
+  }
+
+  .category-card {
+    padding: 15px;
+  }
+
+  .category-card img {
+    width: 40px;
+    height: 40px;
+  }
+
   .adsonar-banner {
     max-width: 260px;
     margin: 10px auto;
@@ -43,6 +255,25 @@
 }
 
 @media (max-width: 320px) {
+  .glow-text {
+    font-size: 1.5rem;
+  }
+
+  .magic-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    max-width: 240px;
+  }
+
+  .category-card {
+    padding: 10px;
+  }
+
+  .category-card img {
+    width: 35px;
+    height: 35px;
+  }
+
   .adsonar-banner {
     max-width: 240px;
     margin: 8px auto;
