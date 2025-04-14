@@ -17,21 +17,30 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // Global click counter for interstitial ads
-window.clickCount = 0; // Global scope မှာ သတ်မှတ်ပြီး window object မှာ ထားတယ်
+window.clickCount = 0;
 
 // Sample AdSonar initialization with error handling
 function initAdSonar() {
   console.log("Initializing AdSonar...");
   try {
-    const bannerDiv = document.querySelector("#nms_banner:not(.loaded)");
-    if (bannerDiv && typeof window.Sonar !== "undefined") {
+    const adContainer = document.getElementById("ad-container");
+    if (adContainer && typeof window.Sonar !== "undefined" && !adContainer.classList.contains("loaded")) {
       window.Sonar.show({ adUnit: "nms_banner" });
-      bannerDiv.classList.add("loaded"); // Mark as loaded to prevent multiple loads
+      adContainer.classList.add("loaded"); // Mark as loaded
+      adContainer.classList.remove("hidden"); // Show ad
     } else {
-      console.warn("AdSonar not loaded or no banner div found.");
+      console.warn("AdSonar not loaded or no ad container found.");
     }
   } catch (error) {
     console.error("AdSonar initialization error:", error);
+  }
+}
+
+// Hide ad container
+function hideAd() {
+  const adContainer = document.getElementById("ad-container");
+  if (adContainer) {
+    adContainer.classList.add("hidden");
   }
 }
 
@@ -47,18 +56,7 @@ function trackClick() {
     }
   } catch (error) {
     console.error("Interstitial ad error:", error);
-    window.clickCount = 0; // Reset counter to prevent infinite loop
-  }
-}
-
-// Load JSON data
-async function loadData() {
-  try {
-    const response = await fetch("data.json");
-    return await response.json();
-  } catch (error) {
-    console.error("Error loading data:", error);
-    return { categories: [] };
+    window.clickCount = 0;
   }
 }
 
@@ -68,123 +66,17 @@ function showScreen(screenId) {
     screen.classList.add("hidden");
   });
   document.getElementById(screenId).classList.remove("hidden");
-  // Initialize banner ad for the new screen
-  initAdSonar();
-}
 
-// Show categories screen
-async function showCategories() {
-  try {
-    const data = await loadData();
-    const grid = document.getElementById("categories-grid");
-    grid.innerHTML = "";
-    data.categories.forEach((category) => {
-      const item = document.createElement("div");
-      item.className = "grid-item";
-      item.innerHTML = `
-        <div class="icon">${category.icon}</div>
-        <div>${category.name}</div>
-      `;
-      item.onclick = () => {
-        trackClick();
-        showQuestions(category.id);
-      };
-      grid.appendChild(item);
-    });
-    showScreen("categories-screen");
-  } catch (error) {
-    console.error("Error in showCategories:", error);
-  }
-}
-
-// Show questions screen
-async function showQuestions(categoryId) {
-  try {
-    const data = await loadData();
-    const category = data.categories.find((c) => c.id === categoryId);
-    if (!category) return;
-
-    document.getElementById("category-title").textContent = category.name;
-    const list = document.getElementById("question-list");
-    list.innerHTML = "";
-    category.questions.forEach((q) => {
-      const item = document.createElement("div");
-      item.className = "question-item";
-      item.textContent = q.text;
-      item.onclick = () => {
-        trackClick();
-        showAnswer(q.id);
-      };
-      list.appendChild(item);
-    });
-    showScreen("questions-screen");
-  } catch (error) {
-    console.error("Error in showQuestions:", error);
-  }
-}
-
-// Show answer screen
-async function showAnswer(questionId) {
-  try {
-    const data = await loadData();
-    let questionText = "";
-    let answers = [];
-    data.categories.forEach((category) => {
-      const question = category.questions.find((q) => q.id === questionId);
-      if (question) {
-        questionText = question.text;
-        answers = question.answers;
-      }
-    });
-
-    const answer = answers[Math.floor(Math.random() * answers.length)];
-    document.getElementById("question-text").textContent = questionText;
-    document.getElementById("answer-text").textContent = answer;
-
-    showScreen("answer-screen");
-  } catch (error) {
-    console.error("Error in showAnswer:", error);
-  }
-}
-
-// Share answer as text
-async function shareAnswer() {
-  trackClick();
-  const questionText = document.getElementById("question-text").textContent;
-  const answerText = document.getElementById("answer-text").textContent;
-  const botLink = "https://t.me/BayDinForU_bot"; // Replace with your actual bot link
-  const shareText = `မေးခွန်း: ${questionText}\nအဖြေ: ${answerText}\n- နတ်မျက်စိ\nBot: @BayDinForU_bot}`;
-  const encodedText = encodeURIComponent(shareText);
-
-  try {
-    if (window.Telegram && window.Telegram.WebApp) {
-      // Share to Telegram chats
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(botLink)}&text=${encodedText}`;
-      window.Telegram.WebApp.openTelegramLink(shareUrl);
-    } else if (navigator.share) {
-      // Fallback to Web Share API
-      await navigator.share({
-        text: shareText,
-      });
-    } else {
-      // Fallback to clipboard
-      await navigator.clipboard.writeText(shareText);
-      alert("မျှဝေရန်အတွက် စာသားကို ကူးယူပြီးပါပြီ။ သင်နှစ်သက်ရာ နေရာတွင် ထည့်သွင်းမျှဝေနိုင်ပါသည်။");
-    }
-  } catch (error) {
-    console.error("Share error:", error);
-    try {
-      await navigator.clipboard.writeText(shareText);
-      alert("မျှဝေရန် မအောင်မြင်ပါ။ စာသားကို ကူးယူပြီးပါပြီ။ သင်နှစ်သက်ရာ နေရာတွင် ထည့်သွင်းမျှဝေနိုင်ပါသည်။");
-    } catch (clipboardError) {
-      console.error("Clipboard error:", clipboardError);
-      alert("မျှဝေရန် မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ စာသားကို ကိုယ်တိုင်ကူးယူပြီး မျှဝေပါ။");
-    }
+  // Show ad for specific screens (e.g., all screens except home)
+  if (screenId !== "home-screen") {
+    initAdSonar();
+  } else {
+    hideAd();
   }
 }
 
 // Initialize app
 document.addEventListener("DOMContentLoaded", () => {
-  initAdSonar();
+  // Only show ad after user interaction, not on initial load
   showScreen("home-screen");
 });
